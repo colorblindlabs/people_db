@@ -1,0 +1,49 @@
+{
+  "name": "angular-formly-material",
+  "description": "Material design templates for angular-formly",
+  "main": "dist/formly-material.js",
+  "authors": [
+    "Kamil Kisiela <mys.sterowiec@gmail.com>"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/formly-js/angular-formly-templates-material",
+  "keywords": [
+    "AngularJs",
+    "form",
+    "formly",
+    "json",
+    "html",
+    "material"
+  ],
+  "ignore": [
+    "**/.*",
+    "coverage",
+    "demo",
+    "node_modules",
+    "src",
+    "tests",
+    "webpack",
+    "karma.conf.js",
+    "package.js",
+    "webpack.config.js"
+  ],
+  "dependencies": {
+    "angular": "~1.4.0",
+    "angular-messages": "~1.4.0",
+    "angular-animate": "~1.4.0",
+    "angular-aria": "~1.4.0",
+    "angular-material": "~1.0.0",
+    "angular-formly": "~7.3.0"
+  },
+  "version": "0.14.3",
+  "_release": "0.14.3",
+  "_resolution": {
+    "type": "version",
+    "tag": "0.14.3",
+    "commit": "a1ec37659efa17ac7ab095b318d7a790f5c04a8c"
+  },
+  "_source": "https://github.com/wieldo/angular-formly-templates-material.git",
+  "_target": "^0.14.3",
+  "_originalSource": "angular-formly-material",
+  "_direct": true
+}

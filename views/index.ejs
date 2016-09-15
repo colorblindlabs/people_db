@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>My App</title>
+    <!-- Twitter bootstrap -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.css" rel="stylesheet">
+    <!-- apiCheck is used by formly to validate its api -->
+    <script src="//rawgit.com/kentcdodds/api-check/latest/dist/api-check.js"></script>
+    <!-- This is the latest version of angular (at the time this template was created) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.4/angular.min.js"></script>
+    <!-- Angular-UI Bootstrap has tabs directive we want -->
+    <script src="//npmcdn.com/angular-ui-bootstrap@latest/dist/ui-bootstrap-tpls.js"></script>
+    <!-- This is the current state of master for formly core. -->
+    <script src="//npmcdn.com/angular-formly@latest/dist/formly.js"></script>
+    <!-- This is the current state of master for the bootstrap templates -->
+    <script src="//rawgit.com/formly-js/angular-formly-templates-bootstrap/latest/dist/angular-formly-templates-bootstrap.js"></script>
+    <script src="https://rawgit.com/angular/bower-angular-messages/v1.4.1/angular-messages.min.js"></script>
+    <script src="https://rawgit.com/angular/bower-angular-animate/v1.4.1/angular-animate.min.js"></script>
+    <script src="main.js"></script>
+</head>
+
+<body ng-app="formlyExample" ng-controller="MainCtrl as vm" style="height: 100%;">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-8" style="padding-top:20px;padding-right:30px;padding-left:30px;">
+                <pre ng-if="users.length < 1">All datas will show up here...</pre>
+                <ul class="list-group" ng-if="users.length > 0">
+                    <li class="list-group-item row" ng-repeat="user in users | orderBy: 'fullname'">
+                        <div class="row" style="margin-bottom:10px;">
+                            <div class="col-lg-3">
+                                <strong style="font-size:20px;padding-bottom:-10px;">{{user.fullname}}</strong>
+                                <br/><a href="" ng-click="addR(_id)" style="cursor: pointer;"><small>[+ add relatives]</small></a>
+                            </div>
+                            <div class="col-lg-4">
+                                {{user.personal.address}}, <span ng-if="user.personal.address2 != null"><br/>{{user.personal.address2}},</span>
+                                <br/>{{user.personal.city}}
+                            </div>
+                            <div class="col-lg-3">
+                                <span class="glyphicon glyphicon-envelope" aria-hidden="true"></span> <a style="cursor: pointer;" href="mailto:{{user.personal.email}}">{{user.personal.email}}</a>
+                                <br/> <span class="glyphicon glyphicon-earphone" aria-hidden="true"></span> {{user.personal.phone.number}} <span ng-if="user.personal.phone.type != null"><small>({{user.personal.phone.type}})</small></span>
+                            </div>
+                            <div class="col-lg-2">
+                                <div class="btn-group" role="group">
+                                    <button type="button" ng-click="edit(user, user._id)" class="btn btn-default">Edit</button>
+                                    <button type="button" ng-click="delete(user._id)" class="btn btn-default">Remove</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3">
+                                {{user.office.name}}
+                            </div>
+                            <div class="col-lg-4">
+                                {{user.office.address}}, <span ng-if="user.personal.address2 != null"><br/>{{user.office.address2}},</span>
+                                <br/>{{user.office.city}}
+                            </div>
+                            <div class="col-lg-3">
+                                <span class="glyphicon glyphicon-envelope" aria-hidden="true"></span> <a style="cursor: pointer;" href="mailto:{{user.personal.email}}">{{user.office.email}}</a>
+                                <br/> <span class="glyphicon glyphicon-earphone" aria-hidden="true"></span> {{user.office.phone.number}} <span ng-if="user.personal.phone.type != null"><small>({{user.office.phone.type}})</small></span>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="well col-lg-4" style="overflow-y:auto;height:100%;">
+                <h3 class="title">Add Data</h3>
+                <hr/>
+                <form ng-submit="vm.onSubmit()" name="vm.form" novalidate>
+                    <formly-form model="vm.model" fields="vm.fields" form="vm.form" options="vm.options">
+                        <button type="submit" class="btn btn-primary submit-button" ng-disabled="vm.form.$pristine || vm.form.$invalid">Submit</button>
+                        <button type="button" class="btn btn-default" ng-click="vm.options.resetModel()">Reset</button>
+                    </formly-form>
+                </form>
+                <!-- <hr />
+                <pre>{{vm.model | json}}</pre> -->
+            </div>
+        </div>
+    </div>
+    <!-- Put custom templates here -->
+    <script type="text/ng-template" id="editModal.html">
+        <div class="modal-body">
+            <formly-form model="vm.formData.model" fields="vm.formData.fields" form="vm.form" options="vm.formData.options">
+            </formly-form>        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" ng-click="vm.ok()">Save</button>
+            <button class="btn btn-default" ng-click="vm.cancel()">Cancel</button>
+        </div>
+    </script>
+    <script type="text/ng-template" id="error-messages.html">
+        <formly-transclude></formly-transclude>
+        <div ng-messages="fc.$error" ng-if="form.$submitted || options.formControl.$touched" class="error-messages">
+            <div ng-message="{{ ::name }}" ng-repeat="(name, message) in ::options.validation.messages" class="message">{{ message(fc.$viewValue, fc.$modelValue, this)}}</div>
+        </div>
+    </script>
+    <script type="text/ng-template" id="panel.html">
+        <div class="panel panel-default">
+            <div class="panel-heading px-nested-panel-heading clearfix">
+                <strong class="control-label" ng-if="options.templateOptions.label">
+              {{options.templateOptions.label}}
+            </strong>
+            </div>
+            <div class="panel-body px-nested-panel-body">
+                <formly-transclude></formly-transclude>
+            </div>
+        </div>
+    </script>
+</body>
+
+</html>
