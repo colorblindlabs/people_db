@@ -118,6 +118,11 @@
         vm.onSubmit = onSubmit;
         vm.onReset = onReset;
 
+        vm.env = {
+            angularVersion: angular.version.full,
+            formlyVersion: formlyVersion
+        };
+
         vm.model = {};
 
         vm.options = {};
@@ -138,43 +143,33 @@
             template: '<div><strong>Email *</strong></div>'
         }, {
             type: 'repeatSection',
-            key: 'emails',
+            key: 'email',
             templateOptions: {
-                btnText: 'Add another email',
-                fields: {
+                btnText: '[+ Add email]',
+                fields: [{
                     key: 'address',
                     type: 'input',
                     templateOptions: {
                         type: 'email',
                         required: true
                     }
-                }
+                }]
             }
         }, {
             className: 'section-label',
             template: '<div><strong>Phone *</strong></div>'
         }, {
             type: 'repeatSection',
-            key: 'phones',
+            key: 'phone',
             templateOptions: {
-                btnText: 'Add another phone',
-                fields: {
+                btnText: '[+ Add phone]',
+                fields: [{
                     className: 'row',
                     fieldGroup: [{
-                        key: 'number',
-                        type: 'input',
-                        className: 'col-xs-8',
-                        templateOptions: {
-                            label: 'Primary Phone Number',
-                            type: 'phone',
-                            required: true
-                        }
-                    }, {
                         key: "type",
                         type: "select",
                         className: 'col-xs-4',
                         templateOptions: {
-                            label: "Phone Type",
                             valueProp: "name",
                             options: [{
                                 name: "Mobile"
@@ -185,8 +180,16 @@
                             }],
                             required: true
                         }
+                    }, {
+                        key: 'number',
+                        type: 'input',
+                        className: 'col-xs-8',
+                        templateOptions: {
+                            type: 'phone',
+                            required: true
+                        }
                     }]
-                }
+                }]
             }
         }, {
             key: 'address',
@@ -329,86 +332,6 @@
             res.error(function(err) {
                 console.log(err);
             })
-        }
-
-        // Add relative
-        $scope.addR = function(model, id) {
-            var result = $uibModal.open({
-                templateUrl: 'modalTemplate.html',
-                controller: 'ModalCtrl',
-                controllerAs: 'vm',
-                resolve: {
-                    formData: function() {
-                        return {
-                            model: model,
-                            fields: [{
-                                key: 'r.fullname',
-                                type: 'input',
-                                templateOptions: {
-                                    required: true,
-                                    type: 'text',
-                                    label: 'Full Name'
-                                }
-                            }, {
-                                key: 'r.personal',
-                                wrapper: 'panel',
-                                templateOptions: {
-                                    label: 'Personal'
-                                },
-                                fieldGroup: [{
-                                    key: 'email',
-                                    type: 'input',
-                                    templateOptions: {
-                                        label: 'Email',
-                                        type: 'email',
-                                        required: true
-                                    }
-                                }, {
-                                    key: 'phone',
-                                    fieldGroup: [{
-                                        key: 'number',
-                                        type: 'input',
-                                        templateOptions: {
-                                            label: 'Phone Number',
-                                            type: 'phone',
-                                            required: true
-                                        }
-                                    }, {
-                                        key: 'type',
-                                        type: 'input',
-                                        templateOptions: {
-                                            label: 'Phone Type',
-                                            type: 'text'
-                                        }
-                                    }]
-                                }, {
-                                    key: 'address',
-                                    type: 'input',
-                                    templateOptions: {
-                                        required: true,
-                                        type: 'text',
-                                        label: 'Address'
-                                    }
-                                }, {
-                                    key: 'address2',
-                                    type: 'input',
-                                    templateOptions: {
-                                        type: 'text'
-                                    }
-                                }, {
-                                    key: 'city',
-                                    type: 'input',
-                                    templateOptions: {
-                                        required: true,
-                                        type: 'text',
-                                        label: 'City'
-                                    }
-                                }]
-                            }]
-                        }
-                    }
-                }
-            }).result;
         }
     });
 
