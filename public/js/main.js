@@ -138,7 +138,7 @@
             template: '<div><strong>Email *</strong></div>'
         }, {
             type: 'repeatSection',
-            key: 'email',
+            key: 'emails',
             templateOptions: {
                 btnText: 'Add another email',
                 fields: {
@@ -155,7 +155,7 @@
             template: '<div><strong>Phone *</strong></div>'
         }, {
             type: 'repeatSection',
-            key: 'phone',
+            key: 'phones',
             templateOptions: {
                 btnText: 'Add another phone',
                 fields: {

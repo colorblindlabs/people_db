@@ -111,7 +111,7 @@
             <div class="well col-lg-4" style="margin-top:20px;">
                 <form ng-submit="vm.onSubmit()" name="vm.form" novalidate>
                     <formly-form model="vm.model" fields="vm.fields" form="vm.form" options="vm.options">
-                        <button type="submit" class="btn btn-info submit-button" ng-disabled="vm.form.$pristine || vm.form.$invalid">Add Data</button>
+                        <button type="submit" class="btn btn-info submit-button" ng-disabled="vm.form.$pristine || vm.form.$invalid">Save Data</button>
                         <button type="button" class="btn btn-default" ng-click="vm.options.resetModel()">Reset</button>
                     </formly-form>
                 </form>
