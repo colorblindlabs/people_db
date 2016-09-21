@@ -21,10 +21,7 @@ router.post('/', function(req, res, next) {
             address: req.body.address,
             city: req.body.city,
             email: req.body.email,
-            phone: [{
-                number: req.body.phone.number,
-                type: req.body.phone.type
-            }]
+            phone: req.body.phone
         }
     });
 

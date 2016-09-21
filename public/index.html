@@ -25,6 +25,8 @@
     <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/select2/3.4.5/select2.css">
     <!-- Selectize theme -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.8.5/css/selectize.default.css">
+    <!-- Font awesome -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/904a39e91d.css">
     <!-- This is the current state of master for the bootstrap templates -->
     <script src="//rawgit.com/formly-js/angular-formly-templates-bootstrap/latest/dist/angular-formly-templates-bootstrap.js"></script>
     <script src="https://rawgit.com/angular/bower-angular-messages/v1.4.1/angular-messages.min.js"></script>
@@ -35,27 +37,13 @@
     <script type="text/javascript" src="js/angular-loading-spinner.js"></script>
     <!-- Main script -->
     <script src="js/main.js"></script>
-    <!-- Custom CSS -->
-    <style type="text/css">
-    .data-unit {
-        position: relative;
-    }
-    
-    .hover-el {
-        display: none;
-    }
-    
-    .data-unit:hover .hover-el {
-        display: block;
-    }
-    </style>
 </head>
 
 <body ng-app="MyApp" ng-controller="MainCtrl as vm" style="height: 100%;">
     <span us-spinner="{radius:30, width:8, length: 16}"></span>
     <div class="container-fluid">
         <div class="row">
-            <div class="col-lg-8" style="padding-top:20px;padding-right:30px;padding-left:30px;">
+            <div class="col-lg-9" style="padding-top:20px;padding-right:30px;padding-left:30px;">
                 <pre ng-if="users.length < 1">{{vm.model | json}}</pre>
                 <!-- <pre ng-if="users.length < 1">All datas will show up here...</pre> -->
                 <ul class="list-group" ng-if="users.length > 0">
@@ -63,30 +51,31 @@
                         <div class="row" style="margin-bottom:10px;">
                             <div class="col-lg-3">
                                 <strong style="font-size:20px;padding-bottom:-10px;">{{user.fullname}}</strong>
-                                <br/><a href="" class="hover-el" ng-click="addR(user, user._id)" style="cursor: pointer;"><small>[+ add relatives]</small></a>
+                                <br/><a href="" ng-click="addOff(user, user._id)" style="cursor: pointer;"><small>[+ add office]</small></a>
+                                <br/><a href="" ng-click="addRel(user, user._id)" style="cursor: pointer;"><small>[+ add relatives]</small></a>
                             </div>
                             <div class="col-lg-4">
                                 {{user.personal.address}}, <span ng-if="user.personal.address2 != null"><br/>{{user.personal.address2}},</span>
                                 <br/>{{user.personal.city}}
                             </div>
                             <div class="col-lg-3">
-                                <p style="margin-top:-10px;">
-                                    <div ng-repeat="email in user.personal.email">
-                                        <span class="glyphicon glyphicon-envelope" aria-hidden="true"></span> <a class="text-primary" style="cursor: pointer;" href="mailto:{{email}}">{{email}}</a>
-                                    </div>
-                                    <a href="" class="hover-el link" ng-click="addR(user, user._id)" style="cursor: pointer;"><small>[+ add more email]</small></a>
-                                </p>
-                                <p>
+                                <p style="margin-top:-10px;" ng-if="user.personal.phone.length > 0">
                                     <div ng-repeat="phone in user.personal.phone">
-                                        <span class="glyphicon glyphicon-earphone" aria-hidden="true"></span> {{phone.number}} <small>({{phone.type}})</small>
+                                        <i class="fa fa-phone"></i> {{phone.number}} <small>({{phone.type}})</small>
                                     </div>
-                                    <a href="" class="hover-el" ng-click="addR(user, user._id)" style="cursor: pointer;"><small>[+ add more phone]</small></a>
+                                    <!-- <a href="" class="hover-el" ng-click="addR(user, user._id)" style="cursor: pointer;"><small>[+ add more phone]</small></a> -->
+                                </p>
+                                <p  ng-if="user.personal.email.length > 0">
+                                    <div ng-repeat="email in user.personal.email">
+                                        <i class="fa fa-envelope-o"></i> <a class="text-primary" style="cursor: pointer;" href="mailto:{{email.address}}">{{email.address}}</a>
+                                    </div>
+                                    <!-- <a href="" class="hover-el link" ng-click="addR(user, user._id)" style="cursor: pointer;"><small>[+ add more email]</small></a> -->
                                 </p>
                                 <!-- <br/><a href="" ng-click="addPersonalPh(_id)" style="cursor: pointer;"><small>[+ add more phone]</small></a> -->
                             </div>
                             <div class="col-lg-2">
                                 <div class="btn-group" role="group">
-                                    <button type="button" ng-click="edit(user, user._id)" class="btn btn-default">Edit</button>
+                                    <button type="button" ng-click="edit(user, user._id)" class="btn btn-default">Update</button>
                                     <button type="button" ng-click="delete(user._id)" class="btn btn-default">Remove</button>
                                 </div>
                             </div>
@@ -108,11 +97,11 @@
                     </li>
                 </ul>
             </div>
-            <div class="well col-lg-4" style="margin-top:20px;">
+            <div class="well col-lg-3" style="margin-top:20px;">
                 <form ng-submit="vm.onSubmit()" name="vm.form" novalidate>
                     <formly-form model="vm.model" fields="vm.fields" form="vm.form" options="vm.options">
                         <button type="submit" class="btn btn-info submit-button" ng-disabled="vm.form.$pristine || vm.form.$invalid">Save Data</button>
-                        <button type="button" class="btn btn-default" ng-click="vm.options.resetModel()">Reset</button>
+                        <button type="button" class="btn btn-default" ng-click="vm.options.resetModel()">Clear</button>
                     </formly-form>
                 </form>
                 <!-- <hr />
@@ -127,7 +116,7 @@
             </formly-form>
         </div>
         <div class="modal-footer footer">
-            <button class="btn btn-info" ng-click="vm.ok()">Save</button>
+            <button class="btn btn-info" ng-click="vm.ok()">Save Update</button>
             <button class="btn btn-default" ng-click="vm.cancel()">Cancel</button>
         </div>
     </script>
@@ -138,13 +127,13 @@
             <div class="{{hideRepeat}}">
                 <div class="repeatsection" ng-repeat="element in model[options.key]" ng-init="fields = copyFields(to.fields)">
                     <div class="row">
-                        <div class="col-xs-11">
+                        <div class="col-xs-10">
                             <formly-form fields="fields" model="element" form="form">
                             </formly-form>
                         </div>
-                        <div class="col-xs-1">
+                        <div class="col-xs-2">
                             <a href="" ng-click="model[options.key].splice($index, 1)">
-                                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                                <i class="fa fa-trash-o" aria-hidden="true"></i>
                             </a>
                         </div>
                     </div>
@@ -166,8 +155,8 @@
         <div class="panel panel-default">
             <div class="panel-heading px-nested-panel-heading clearfix">
                 <strong class="control-label" ng-if="options.templateOptions.label">
-              {{options.templateOptions.label}}
-            </strong>
+                  {{options.templateOptions.label}}
+                </strong>
             </div>
             <div class="panel-body px-nested-panel-body">
                 <formly-transclude></formly-transclude>

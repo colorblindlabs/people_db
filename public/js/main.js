@@ -21,9 +21,7 @@
                     formState: $scope.formState
                 };
                 $scope.addNew = addNew;
-
                 $scope.copyFields = copyFields;
-
 
                 function copyFields(fields) {
                     fields = angular.copy(fields);
@@ -123,7 +121,10 @@
             formlyVersion: formlyVersion
         };
 
-        vm.model = {};
+        vm.model = {
+            email: [],
+            phone: []
+        };
 
         vm.options = {};
 
@@ -139,8 +140,31 @@
                 label: 'Full Name'
             }
         }, {
+            key: 'address',
+            type: 'textarea',
+            ngModelElAttrs: {
+                'capitalize-first': 'capitalize-first'
+            },
+            templateOptions: {
+                required: true,
+                type: 'text',
+                label: 'Address',
+                rows: 3
+            }
+        }, {
+            key: 'city',
+            type: 'input',
+            ngModelElAttrs: {
+                'capitalize-first': 'capitalize-first'
+            },
+            templateOptions: {
+                required: true,
+                type: 'text',
+                label: 'City'
+            }
+        }, {
             className: 'section-label',
-            template: '<div><strong>Email *</strong></div>'
+            template: '<div><strong>Email</strong></div>'
         }, {
             type: 'repeatSection',
             key: 'email',
@@ -157,7 +181,7 @@
             }
         }, {
             className: 'section-label',
-            template: '<div><strong>Phone *</strong></div>'
+            template: '<div><strong>Phone</strong></div>'
         }, {
             type: 'repeatSection',
             key: 'phone',
@@ -168,7 +192,7 @@
                     fieldGroup: [{
                         key: "type",
                         type: "select",
-                        className: 'col-xs-4',
+                        className: 'col-xs-5',
                         templateOptions: {
                             valueProp: "name",
                             options: [{
@@ -183,35 +207,13 @@
                     }, {
                         key: 'number',
                         type: 'input',
-                        className: 'col-xs-8',
+                        className: 'col-xs-7',
                         templateOptions: {
                             type: 'phone',
                             required: true
                         }
                     }]
                 }]
-            }
-        }, {
-            key: 'address',
-            type: 'textarea',
-            ngModelElAttrs: {
-                'capitalize-first': 'capitalize-first'
-            },
-            templateOptions: {
-                required: true,
-                type: 'text',
-                label: 'Address'
-            }
-        }, {
-            key: 'city',
-            type: 'input',
-            ngModelElAttrs: {
-                'capitalize-first': 'capitalize-first'
-            },
-            templateOptions: {
-                required: true,
-                type: 'text',
-                label: 'City'
             }
         }];
 
@@ -259,42 +261,6 @@
                                     label: 'Full Name'
                                 }
                             }, {
-                                key: 'personal.email',
-                                type: 'input',
-                                templateOptions: {
-                                    label: 'Primary Email',
-                                    type: 'email',
-                                    required: true
-                                }
-                            }, {
-                                className: 'row',
-                                fieldGroup: [{
-                                    key: 'personal.phone.number',
-                                    type: 'input',
-                                    className: 'col-xs-8',
-                                    templateOptions: {
-                                        label: 'Primary Phone Number',
-                                        type: 'phone',
-                                        required: true
-                                    }
-                                }, {
-                                    key: "personal.phone.type",
-                                    type: "select",
-                                    className: 'col-xs-4',
-                                    templateOptions: {
-                                        label: "Phone Type",
-                                        valueProp: "name",
-                                        options: [{
-                                            name: "Mobile"
-                                        }, {
-                                            name: "Land Line"
-                                        }, {
-                                            name: "Fax"
-                                        }],
-                                        required: true
-                                    }
-                                }]
-                            }, {
                                 key: 'personal.address',
                                 type: 'textarea',
                                 ngModelElAttrs: {
@@ -303,7 +269,8 @@
                                 templateOptions: {
                                     required: true,
                                     type: 'text',
-                                    label: 'Address'
+                                    label: 'Address',
+                                    rows: 3
                                 }
                             }, {
                                 key: 'personal.city',
@@ -315,6 +282,59 @@
                                     required: true,
                                     type: 'text',
                                     label: 'City'
+                                }
+                            }, {
+                                className: 'section-label',
+                                template: '<div><strong>Email</strong></div>'
+                            }, {
+                                type: 'repeatSection',
+                                key: 'personal.email',
+                                templateOptions: {
+                                    btnText: '[+ Add email]',
+                                    fields: [{
+                                        key: 'personal.email.address',
+                                        type: 'input',
+                                        templateOptions: {
+                                            type: 'email',
+                                            required: true
+                                        }
+                                    }]
+                                }
+                            }, {
+                                className: 'section-label',
+                                template: '<div><strong>Phone</strong></div>'
+                            }, {
+                                type: 'repeatSection',
+                                key: 'personal.phone',
+                                templateOptions: {
+                                    btnText: '[+ Add phone]',
+                                    fields: [{
+                                        className: 'row',
+                                        fieldGroup: [{
+                                            key: "personal.phone.type",
+                                            type: "select",
+                                            className: 'col-xs-4',
+                                            templateOptions: {
+                                                valueProp: "name",
+                                                options: [{
+                                                    name: "Mobile"
+                                                }, {
+                                                    name: "Land Line"
+                                                }, {
+                                                    name: "Fax"
+                                                }],
+                                                required: true
+                                            }
+                                        }, {
+                                            key: 'personal.phone.number',
+                                            type: 'input',
+                                            className: 'col-xs-8',
+                                            templateOptions: {
+                                                type: 'phone',
+                                                required: true
+                                            }
+                                        }]
+                                    }]
                                 }
                             }]
                         }
@@ -343,6 +363,7 @@
         vm.cancel = cancel;
 
         // variable assignment
+        console.log(formData.fields);
         vm.formData = formData;
         vm.originalFields = angular.copy(vm.formData.fields);
 
