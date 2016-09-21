@@ -1,5 +1,0 @@
-messages
-========
-
-ng-messages
------------

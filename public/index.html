@@ -17,32 +17,72 @@
     <script src="//npmcdn.com/angular-ui-bootstrap@latest/dist/ui-bootstrap-tpls.js"></script>
     <!-- This is the current state of master for formly core. -->
     <script src="//npmcdn.com/angular-formly@latest/dist/formly.js"></script>
+    <!-- ui-select files -->
+    <script src="https://cdn.rawgit.com/angular-ui/ui-select/v0.16.0/dist/select.js"></script>
+    <link rel="stylesheet" href="https://cdn.rawgit.com/angular-ui/ui-select/v0.16.0/dist/select.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.6/angular-sanitize.js"></script>
+    <!-- Select2 theme -->
+    <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/select2/3.4.5/select2.css">
+    <!-- Selectize theme -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.8.5/css/selectize.default.css">
     <!-- This is the current state of master for the bootstrap templates -->
     <script src="//rawgit.com/formly-js/angular-formly-templates-bootstrap/latest/dist/angular-formly-templates-bootstrap.js"></script>
     <script src="https://rawgit.com/angular/bower-angular-messages/v1.4.1/angular-messages.min.js"></script>
     <script src="https://rawgit.com/angular/bower-angular-animate/v1.4.1/angular-animate.min.js"></script>
-    <script src="main.js"></script>
+    <!-- Spinner -->
+    <script type="text/javascript" src="http://fgnass.github.io/spin.js/spin.min.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/angular-spinner/0.8.1/angular-spinner.min.js"></script>
+    <script type="text/javascript" src="js/angular-loading-spinner.js"></script>
+    <!-- Main script -->
+    <script src="js/main.js"></script>
+    <!-- Custom CSS -->
+    <style type="text/css">
+    .data-unit {
+        position: relative;
+    }
+    
+    .hover-el {
+        display: none;
+    }
+    
+    .data-unit:hover .hover-el {
+        display: block;
+    }
+    </style>
 </head>
 
-<body ng-app="formlyExample" ng-controller="MainCtrl as vm" style="height: 100%;">
+<body ng-app="MyApp" ng-controller="MainCtrl as vm" style="height: 100%;">
+    <span us-spinner="{radius:30, width:8, length: 16}"></span>
     <div class="container-fluid">
         <div class="row">
             <div class="col-lg-8" style="padding-top:20px;padding-right:30px;padding-left:30px;">
-                <pre ng-if="users.length < 1">All datas will show up here...</pre>
+                <pre ng-if="users.length < 1">{{vm.model | json}}</pre>
+                <!-- <pre ng-if="users.length < 1">All datas will show up here...</pre> -->
                 <ul class="list-group" ng-if="users.length > 0">
-                    <li class="list-group-item row" ng-repeat="user in users | orderBy: 'fullname'">
+                    <li class="list-group-item row data-unit" ng-repeat="user in users">
                         <div class="row" style="margin-bottom:10px;">
                             <div class="col-lg-3">
                                 <strong style="font-size:20px;padding-bottom:-10px;">{{user.fullname}}</strong>
-                                <br/><a href="" ng-click="addR(_id)" style="cursor: pointer;"><small>[+ add relatives]</small></a>
+                                <br/><a href="" class="hover-el" ng-click="addR(user, user._id)" style="cursor: pointer;"><small>[+ add relatives]</small></a>
                             </div>
                             <div class="col-lg-4">
                                 {{user.personal.address}}, <span ng-if="user.personal.address2 != null"><br/>{{user.personal.address2}},</span>
                                 <br/>{{user.personal.city}}
                             </div>
                             <div class="col-lg-3">
-                                <span class="glyphicon glyphicon-envelope" aria-hidden="true"></span> <a style="cursor: pointer;" href="mailto:{{user.personal.email}}">{{user.personal.email}}</a>
-                                <br/> <span class="glyphicon glyphicon-earphone" aria-hidden="true"></span> {{user.personal.phone.number}} <span ng-if="user.personal.phone.type != null"><small>({{user.personal.phone.type}})</small></span>
+                                <p style="margin-top:-10px;">
+                                    <div ng-repeat="email in user.personal.email">
+                                        <span class="glyphicon glyphicon-envelope" aria-hidden="true"></span> <a class="text-primary" style="cursor: pointer;" href="mailto:{{email}}">{{email}}</a>
+                                    </div>
+                                    <a href="" class="hover-el link" ng-click="addR(user, user._id)" style="cursor: pointer;"><small>[+ add more email]</small></a>
+                                </p>
+                                <p>
+                                    <div ng-repeat="phone in user.personal.phone">
+                                        <span class="glyphicon glyphicon-earphone" aria-hidden="true"></span> {{phone.number}} <small>({{phone.type}})</small>
+                                    </div>
+                                    <a href="" class="hover-el" ng-click="addR(user, user._id)" style="cursor: pointer;"><small>[+ add more phone]</small></a>
+                                </p>
+                                <!-- <br/><a href="" ng-click="addPersonalPh(_id)" style="cursor: pointer;"><small>[+ add more phone]</small></a> -->
                             </div>
                             <div class="col-lg-2">
                                 <div class="btn-group" role="group">
@@ -51,7 +91,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="row" ng-if="user.office.length > 0">
                             <div class="col-lg-3">
                                 {{user.office.name}}
                             </div>
@@ -62,17 +102,16 @@
                             <div class="col-lg-3">
                                 <span class="glyphicon glyphicon-envelope" aria-hidden="true"></span> <a style="cursor: pointer;" href="mailto:{{user.personal.email}}">{{user.office.email}}</a>
                                 <br/> <span class="glyphicon glyphicon-earphone" aria-hidden="true"></span> {{user.office.phone.number}} <span ng-if="user.personal.phone.type != null"><small>({{user.office.phone.type}})</small></span>
+                                <!-- <br/><a href="" ng-click="addOfficePh(_id)" style="cursor: pointer;"><small>[+ add more phone]</small></a> -->
                             </div>
                         </div>
                     </li>
                 </ul>
             </div>
-            <div class="well col-lg-4" style="overflow-y:auto;height:100%;">
-                <h3 class="title">Add Data</h3>
-                <hr/>
+            <div class="well col-lg-4" style="margin-top:20px;">
                 <form ng-submit="vm.onSubmit()" name="vm.form" novalidate>
                     <formly-form model="vm.model" fields="vm.fields" form="vm.form" options="vm.options">
-                        <button type="submit" class="btn btn-primary submit-button" ng-disabled="vm.form.$pristine || vm.form.$invalid">Submit</button>
+                        <button type="submit" class="btn btn-info submit-button" ng-disabled="vm.form.$pristine || vm.form.$invalid">Add Data</button>
                         <button type="button" class="btn btn-default" ng-click="vm.options.resetModel()">Reset</button>
                     </formly-form>
                 </form>
@@ -81,16 +120,38 @@
             </div>
         </div>
     </div>
-    <!-- Put custom templates here -->
-    <script type="text/ng-template" id="editModal.html">
+    <!-- Modals -->
+    <script type="text/ng-template" id="modalTemplate.html">
         <div class="modal-body">
             <formly-form model="vm.formData.model" fields="vm.formData.fields" form="vm.form" options="vm.formData.options">
-            </formly-form>        </div>
-        <div class="modal-footer">
-            <button class="btn btn-primary" ng-click="vm.ok()">Save</button>
+            </formly-form>
+        </div>
+        <div class="modal-footer footer">
+            <button class="btn btn-info" ng-click="vm.ok()">Save</button>
             <button class="btn btn-default" ng-click="vm.cancel()">Cancel</button>
         </div>
     </script>
+    <!-- repeating sections -->
+    <script type="text/ng-template" id="repeatSection.html">
+        <div>
+            <!--loop through each element in model array-->
+            <div class="{{hideRepeat}}">
+                <div class="repeatsection" ng-repeat="element in model[options.key]" ng-init="fields = copyFields(to.fields)">
+                    <formly-form fields="fields" model="element" form="form">
+                    </formly-form>
+                    <div style="margin-bottom:20px;">
+                        <button type="button" class="btn btn-sm btn-danger" ng-click="model[options.key].splice($index, 1)">
+                            Remove
+                        </button>
+                    </div>
+                    <hr>
+                </div>
+                <p class="AddNewButton">
+                    <button type="button" class="btn btn-sm btn-info" ng-click="addNew()">{{to.btnText}}</button>
+                </p>
+            </div>
+    </script>
+    <!-- Custom scripts -->
     <script type="text/ng-template" id="error-messages.html">
         <formly-transclude></formly-transclude>
         <div ng-messages="fc.$error" ng-if="form.$submitted || options.formControl.$touched" class="error-messages">

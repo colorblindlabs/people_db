@@ -1,0 +1,215 @@
+/* global angular */
+(function() {
+
+    'use strict';
+
+    var app = angular.module('MyApp', [
+        'formly',
+        'lumx',
+        'formlyLumx',
+        'ngMessages',
+        'ngAria'
+    ]);
+
+    // function on application running
+    app.run(function(formlyConfig, formlyValidationMessages) {
+        // NOTE: This next line is highly recommended. Otherwise Chrome's autocomplete will appear over your options!
+        formlyConfig.extras.removeChromeAutoComplete = true;
+
+        formlyConfig.extras.errorExistsAndShouldBeVisibleExpression = 'fc.$touched || form.$submitted';
+
+        formlyValidationMessages.addStringMessage('required', 'This field is required');
+    });
+
+    // app configuration
+    app.config(function(formlyConfigProvider) {
+
+        formlyConfigProvider.setWrapper({
+            name: 'validation',
+            types: ['input'],
+            templateUrl: 'error-messages.html'
+        });
+
+    });
+
+    // Capitalize input field directive
+    app.directive('capitalizeFirst', function(uppercaseFilter, $parse) {
+        return {
+            require: 'ngModel',
+            scope: {
+                ngModel: "="
+            },
+            link: function(scope, element, attrs, modelCtrl) {
+                scope.$watch("ngModel", function() {
+                    scope.ngModel = scope.ngModel.replace(/^(.)|\s(.)/g, function(v) {
+                        return v.toUpperCase();
+                    });
+                });
+            }
+        };
+    });
+
+    app.controller('MainCtrl', function MainCtrl($scope, formlyVersion, $http) {
+        $scope.title = 'People Database';
+
+        // Getting user list
+        $http.get('/users').success(function(users) {
+            $scope.users = users;
+            console.log(users);
+        })
+
+        // funcation assignment
+        var vm = this;
+        vm.onSubmit = onSubmit;
+        vm.onReset = onReset;
+
+        vm.model = {};
+
+        vm.options = {};
+
+        vm.fields = [{
+            // Full name field
+            key: 'fullname', // {
+            type: 'lx-input',
+            wrapper: 'lx-wrapper-errors', // error handling with ngMessages
+            ngModelElAttrs: {
+                'capitalize-first': 'capitalize-first'
+            },
+            templateOptions: {
+                type: 'text', // input type: [email | password | text | url | number]
+                label: 'Full Name',
+                required: true
+            },
+            validation: {
+                messages: {
+                    fullname: function(viewValue, modelValue, scope) {
+                        return 'This field is required.'
+                    }
+                }
+            }
+        }, {
+            // Email fields
+            key: 'email', // {
+            type: 'lx-input',
+            wrapper: 'lx-wrapper-errors', // error handling with ngMessages
+            templateOptions: {
+                type: 'email', // input type: [email | password | text | url | number]
+                label: 'Email',
+                required: true
+            },
+            validation: {
+                messages: {
+                    email: function(viewValue, modelValue, scope) {
+                        return 'That doesn\'t look like a valid email.'
+                    }
+                }
+            }
+        }, {
+            // Phone fields
+            key: 'phone',
+            type: "lx-flex",
+            templateOptions: {
+                flex: {
+                    container: "row",
+                    item: 6
+                },
+                fields: [{
+                    type: "lx-input",
+                    key: "number",
+                    templateOptions: {
+                        type: 'phone',
+                        label: "Phone Number",
+                        required: true
+                    },
+                    validation: {
+                        messages: {
+                            fullname: function(viewValue, modelValue, scope) {
+                                return 'This field is required.'
+                            }
+                        }
+                    }
+                }, {
+                    key: "type",
+                    type: "lx-select",
+                    templateOptions: {
+                        placeholder: "Phone Type *",
+                        required: true,
+                        options: ["Mobile", "Landline", "Fax"]
+                    },
+                    validation: {
+                        messages: {
+                            fullname: function(viewValue, modelValue, scope) {
+                                return 'Please choose phone type.'
+                            }
+                        }
+                    }
+                }]
+            }
+        }, {
+            // Address field
+            key: "address",
+            type: "lx-textarea",
+            ngModelElAttrs: {
+                'capitalize-first': 'capitalize-first'
+            },
+            templateOptions: {
+                required: true,
+                label: "Address"
+            },
+            validation: {
+                messages: {
+                    fullname: function(viewValue, modelValue, scope) {
+                        return 'This field is required.'
+                    }
+                }
+            }
+        }, {
+            // City field
+            key: 'city', // {
+            type: 'lx-input',
+            wrapper: 'lx-wrapper-errors', // error handling with ngMessages
+            ngModelElAttrs: {
+                'capitalize-first': 'capitalize-first'
+            },
+            templateOptions: {
+                type: 'text', // input type: [email | password | text | url | number]
+                label: 'City',
+                required: true
+            }
+        }]
+
+        function onSubmit() {
+            console.log("Saving:", vm.model);
+            if (vm.form.$valid) {
+                vm.options.updateInitialValue();
+
+                // Send to server
+                var res = $http.post('/users', vm.model);
+                res.success(function(data) {
+                    console.log(data);
+                    $scope.users = data;
+                    vm.model = {};
+                });
+                res.error(function(err) {
+                    console.log(err);
+                })
+            }
+        }
+
+        function onReset() {
+            vm.options.resetModel();
+        }
+
+        // Deleting user
+        $scope.delete = function(id) {
+            var res = $http.delete('/users/' + id);
+            res.success(function(data) {
+                $scope.users = data;
+            });
+            res.error(function(err) {
+                console.log(err);
+            })
+        }
+    })
+
+})();

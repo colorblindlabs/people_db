@@ -1,0 +1,35 @@
+{
+  "name": "FormlyLumX",
+  "version": "2.0.5",
+  "description": "Angular-Formly templates based on the LumX Framework",
+  "devDependencies": {
+    "autoprefixer": "~6.0.3",
+    "babel-loader": "~5.3.2",
+    "css-loader": "~0.20.1",
+    "csswring": "~4.0.0",
+    "jshint": "~2.8.0",
+    "jshint-loader": "~0.8.3",
+    "ng-annotate": "~1.0.2",
+    "ng-annotate-loader": "~0.0.10",
+    "postcss": "~5.0.10",
+    "postcss-loader": "~0.7.0",
+    "postcss-nested": "~1.0.0",
+    "raw-loader": "~0.5.1",
+    "sass-loader": "~3.0.0",
+    "webpack": "~1.12.2",
+    "node-sass": "~3.3.3"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/formly-js/angular-formly-templates-lumx.git"
+  },
+  "author": "ShMcK <shawn.j.mckay@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/formly-js/angular-formly-templates-lumx/issues"
+  },
+  "homepage": "https://github.com/formly-js/angular-formly-templates-lumx"
+}
