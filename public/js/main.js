@@ -358,6 +358,7 @@
 
         // Add office data
         $scope.addOff = function(id) {
+            console.clear();
             var result = $uibModal.open({
                 templateUrl: 'modalTemplate.html',
                 controller: 'OfficeModalCtrl',
@@ -478,6 +479,7 @@
 
         // Add family data
         $scope.addFam = function(id) {
+            console.clear();
             var result = $uibModal.open({
                 templateUrl: 'modalTemplate.html',
                 controller: 'FamilyModalCtrl',
@@ -635,7 +637,8 @@
         // variable assignment
         vm.formData = formData;
         vm.originalFields = angular.copy(vm.formData.fields);
-
+        $scope.users = [];
+        
         // function definition
         function ok() {
             vm.formData.model.userid = formData.userid;
@@ -644,7 +647,6 @@
             var res = $http.post('/offices/', vm.formData.model);
             res.success(function(data) {
                 $scope.users = data;
-                vm.formData.model = {};
             });
             res.error(function(err) {
                 console.log(err);
@@ -678,7 +680,6 @@
             var res = $http.post('/families/', vm.formData.model);
             res.success(function(data) {
                 $scope.users = data;
-                vm.formData.model = {};
             });
             res.error(function(err) {
                 console.log(err);

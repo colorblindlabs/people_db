@@ -39,6 +39,7 @@ router.post('/', function(req, res, next) {
 
         Users.find(function(err, users) {
             if (err) return next(err);
+            console.log(users)
             res.json(users);
         });
     });
