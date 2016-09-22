@@ -663,7 +663,11 @@
             // Send to server
             var res = $http.post('/offices/', vm.formData.model);
             res.success(function(data) {
-                $scope.users = data;
+                // $scope.users = data;
+                // Getting user list
+                $http.get('/users').success(function(users) {
+                    $scope.users = users;
+                })
             });
             res.error(function(err) {
                 console.log(err);
@@ -696,7 +700,11 @@
             // Send to server
             var res = $http.post('/families/', vm.formData.model);
             res.success(function(data) {
-                $scope.users = data;
+                // $scope.users = data;
+                // Getting user list
+                $http.get('/users').success(function(users) {
+                    $scope.users = users;
+                })
             });
             res.error(function(err) {
                 console.log(err);
