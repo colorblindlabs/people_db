@@ -37,11 +37,21 @@
     <script type="text/javascript" src="js/angular-loading-spinner.js"></script>
     <!-- Main script -->
     <script src="js/main.js"></script>
+    <style>
+    .highlighted {
+        background: yellow
+    }
+    </style>
 </head>
 
 <body ng-app="MyApp" ng-controller="MainCtrl as vm" style="height: 100%;">
     <span us-spinner="{radius:30, width:8, length: 16}"></span>
     <div class="container-fluid">
+        <!-- <div class="row">
+            <div class="col-lg12">
+                <input type="text" placeholder="Search" ng-model="searchString">
+            </div>
+        </div> -->
         <div class="row">
             <div class="col-lg-9" style="padding-top:20px;padding-right:30px;padding-left:30px;">
                 <!-- <pre ng-if="users.length < 1">{{vm.model | json}}</pre> -->

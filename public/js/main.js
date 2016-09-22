@@ -104,6 +104,23 @@
         };
     });
 
+    // Search filter
+    app.filter('searchFor', function() {
+        return function(arr, searchString) {
+            if (!searchString) {
+                return arr;
+            }
+            var result = [];
+            searchString = searchString.toLowerCase();
+            angular.forEach(arr, function(item) {
+                if (item.title.toLowerCase().indexOf(searchString) !== -1) {
+                    result.push(item);
+                }
+            });
+            return result;
+        };
+    });
+
     // MAIN CONTROLLER
     app.controller('MainCtrl', function MainCtrl($scope, formlyVersion, $http, $uibModal) {
         // Getting user list
@@ -638,7 +655,7 @@
         vm.formData = formData;
         vm.originalFields = angular.copy(vm.formData.fields);
         $scope.users = [];
-        
+
         // function definition
         function ok() {
             vm.formData.model.userid = formData.userid;
