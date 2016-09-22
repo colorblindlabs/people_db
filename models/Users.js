@@ -5,18 +5,16 @@ var UserSchema = new mongoose.Schema({
         type: String,
         default: null
     },
-    personal: {
-        address: {
-            type: String,
-            default: null
-        },
-        city: {
-            type: String,
-            default: null
-        },
-        email: Array,
-        phone: Array
+    address: {
+        type: String,
+        default: null
     },
+    city: {
+        type: String,
+        default: null
+    },
+    email: Array,
+    phone: Array,
     office: Array,
     family: Array
 });

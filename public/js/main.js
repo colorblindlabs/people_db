@@ -219,13 +219,13 @@
 
         // function definition
         function onSubmit() {
+            console.clear();
             if (vm.form.$valid) {
                 vm.options.updateInitialValue();
 
                 // Send to server
                 var res = $http.post('/users', vm.model);
                 res.success(function(data) {
-                    console.log(data);
                     $scope.users = data;
                     vm.model = {};
                 });
@@ -236,14 +236,16 @@
         }
 
         function onReset() {
+            console.clear();
             vm.options.resetModel();
         }
 
         // Edit user
         $scope.edit = function(model, id) {
+            console.clear();
             var result = $uibModal.open({
                 templateUrl: 'modalTemplate.html',
-                controller: 'ModalCtrl',
+                controller: 'UserModalCtrl',
                 controllerAs: 'vm',
                 resolve: {
                     formData: function() {
@@ -261,7 +263,7 @@
                                     label: 'Full Name'
                                 }
                             }, {
-                                key: 'personal.address',
+                                key: 'address',
                                 type: 'textarea',
                                 ngModelElAttrs: {
                                     'capitalize-first': 'capitalize-first'
@@ -273,7 +275,7 @@
                                     rows: 3
                                 }
                             }, {
-                                key: 'personal.city',
+                                key: 'city',
                                 type: 'input',
                                 ngModelElAttrs: {
                                     'capitalize-first': 'capitalize-first'
@@ -288,11 +290,11 @@
                                 template: '<div><strong>Email</strong></div>'
                             }, {
                                 type: 'repeatSection',
-                                key: 'personal.email',
+                                key: 'email',
                                 templateOptions: {
                                     btnText: '[+ Add email]',
                                     fields: [{
-                                        key: 'personal.email.address',
+                                        key: 'address',
                                         type: 'input',
                                         templateOptions: {
                                             type: 'email',
@@ -305,13 +307,13 @@
                                 template: '<div><strong>Phone</strong></div>'
                             }, {
                                 type: 'repeatSection',
-                                key: 'personal.phone',
+                                key: 'phone',
                                 templateOptions: {
                                     btnText: '[+ Add phone]',
                                     fields: [{
                                         className: 'row',
                                         fieldGroup: [{
-                                            key: "personal.phone.type",
+                                            key: "type",
                                             type: "select",
                                             className: 'col-xs-4',
                                             templateOptions: {
@@ -326,7 +328,7 @@
                                                 required: true
                                             }
                                         }, {
-                                            key: 'personal.phone.number',
+                                            key: 'number',
                                             type: 'input',
                                             className: 'col-xs-8',
                                             templateOptions: {
@@ -353,27 +355,330 @@
                 console.log(err);
             })
         }
+
+        // Add office data
+        $scope.addOff = function(id) {
+            var result = $uibModal.open({
+                templateUrl: 'modalTemplate.html',
+                controller: 'OfficeModalCtrl',
+                controllerAs: 'vm',
+                resolve: {
+                    formData: function() {
+                        return {
+                            userid: id,
+                            model: {},
+                            fields: [{
+                                key: 'name',
+                                type: 'input',
+                                ngModelElAttrs: {
+                                    'capitalize-first': 'capitalize-first'
+                                },
+                                templateOptions: {
+                                    required: true,
+                                    type: 'text',
+                                    label: 'Office / Company Name'
+                                }
+                            }, {
+                                key: 'address',
+                                type: 'textarea',
+                                ngModelElAttrs: {
+                                    'capitalize-first': 'capitalize-first'
+                                },
+                                templateOptions: {
+                                    required: true,
+                                    type: 'text',
+                                    label: 'Address',
+                                    rows: 3
+                                }
+                            }, {
+                                key: 'city',
+                                type: 'input',
+                                ngModelElAttrs: {
+                                    'capitalize-first': 'capitalize-first'
+                                },
+                                templateOptions: {
+                                    required: true,
+                                    type: 'text',
+                                    label: 'City'
+                                }
+                            }, {
+                                className: 'section-label',
+                                template: '<div><strong>Email</strong></div>'
+                            }, {
+                                type: 'repeatSection',
+                                key: 'email',
+                                templateOptions: {
+                                    btnText: '[+ Add email]',
+                                    fields: [{
+                                        key: 'address',
+                                        type: 'input',
+                                        templateOptions: {
+                                            type: 'email'
+                                        }
+                                    }]
+                                }
+                            }, {
+                                className: 'section-label',
+                                template: '<div><strong>Phone</strong></div>'
+                            }, {
+                                type: 'repeatSection',
+                                key: 'phone',
+                                templateOptions: {
+                                    btnText: '[+ Add phone]',
+                                    fields: [{
+                                        className: 'row',
+                                        fieldGroup: [{
+                                            key: "type",
+                                            type: "select",
+                                            className: 'col-xs-4',
+                                            templateOptions: {
+                                                valueProp: "name",
+                                                options: [{
+                                                    name: "Mobile"
+                                                }, {
+                                                    name: "Land Line"
+                                                }, {
+                                                    name: "Fax"
+                                                }]
+                                            }
+                                        }, {
+                                            key: 'number',
+                                            type: 'input',
+                                            className: 'col-xs-8',
+                                            templateOptions: {
+                                                type: 'phone'
+                                            }
+                                        }]
+                                    }]
+                                }
+                            }, {
+                                key: 'url',
+                                type: 'input',
+                                templateOptions: {
+                                    type: 'text',
+                                    label: 'URL'
+                                }
+                            }]
+                        }
+                    }
+                }
+            }).result;
+        }
+
+        // Deleting office
+        $scope.deleteOff = function(userId, officeId) {
+            var res = $http.delete('/offices/' + userId + '/' + officeId);
+            res.success(function(data) {
+                $scope.users = data;
+            });
+            res.error(function(err) {
+                console.log(err);
+            })
+        }
+
+        // Add family data
+        $scope.addFam = function(id) {
+            var result = $uibModal.open({
+                templateUrl: 'modalTemplate.html',
+                controller: 'FamilyModalCtrl',
+                controllerAs: 'vm',
+                resolve: {
+                    formData: function() {
+                        return {
+                            userid: id,
+                            model: {},
+                            fields: [{
+                                key: 'fullname',
+                                type: 'input',
+                                ngModelElAttrs: {
+                                    'capitalize-first': 'capitalize-first'
+                                },
+                                templateOptions: {
+                                    required: true,
+                                    type: 'text',
+                                    label: 'Full Name'
+                                }
+                            }, {
+                                key: 'address',
+                                type: 'textarea',
+                                ngModelElAttrs: {
+                                    'capitalize-first': 'capitalize-first'
+                                },
+                                templateOptions: {
+                                    required: true,
+                                    type: 'text',
+                                    label: 'Address',
+                                    rows: 3
+                                }
+                            }, {
+                                key: 'city',
+                                type: 'input',
+                                ngModelElAttrs: {
+                                    'capitalize-first': 'capitalize-first'
+                                },
+                                templateOptions: {
+                                    required: true,
+                                    type: 'text',
+                                    label: 'City'
+                                }
+                            }, {
+                                className: 'section-label',
+                                template: '<div><strong>Email</strong></div>'
+                            }, {
+                                type: 'repeatSection',
+                                key: 'email',
+                                templateOptions: {
+                                    btnText: '[+ Add email]',
+                                    fields: [{
+                                        key: 'address',
+                                        type: 'input',
+                                        templateOptions: {
+                                            type: 'email'
+                                        }
+                                    }]
+                                }
+                            }, {
+                                className: 'section-label',
+                                template: '<div><strong>Phone</strong></div>'
+                            }, {
+                                type: 'repeatSection',
+                                key: 'phone',
+                                templateOptions: {
+                                    btnText: '[+ Add phone]',
+                                    fields: [{
+                                        className: 'row',
+                                        fieldGroup: [{
+                                            key: "type",
+                                            type: "select",
+                                            className: 'col-xs-4',
+                                            templateOptions: {
+                                                valueProp: "name",
+                                                options: [{
+                                                    name: "Mobile"
+                                                }, {
+                                                    name: "Land Line"
+                                                }, {
+                                                    name: "Fax"
+                                                }]
+                                            }
+                                        }, {
+                                            key: 'number',
+                                            type: 'input',
+                                            className: 'col-xs-8',
+                                            templateOptions: {
+                                                type: 'phone'
+                                            }
+                                        }]
+                                    }]
+                                }
+                            }]
+                        }
+                    }
+                }
+            }).result;
+        }
+
+        // Deleting family
+        $scope.deleteFam = function(userId, familyId) {
+            var res = $http.delete('/families/' + userId + '/' + familyId);
+            res.success(function(data) {
+                $scope.users = data;
+            });
+            res.error(function(err) {
+                console.log(err);
+            })
+        }
+
+
     });
 
-    // Modal controllers
-    app.controller('ModalCtrl', function($scope, $uibModalInstance, formData, $http) {
+    // User Modal controllers
+    app.controller('UserModalCtrl', function($scope, $uibModalInstance, formData, $http) {
         var vm = this;
         // function assignment
         vm.ok = ok;
         vm.cancel = cancel;
 
         // variable assignment
-        console.log(formData.fields);
         vm.formData = formData;
         vm.originalFields = angular.copy(vm.formData.fields);
 
         // function definition
         function ok() {
-            console.log('Going to send:', vm.formData.model);
+            console.log(vm.formData.model);
+
             // Save new data
             var res = $http.put('/users/' + vm.formData.model._id, vm.formData.model);
             res.success(function(data) {
                 $scope.users = data;
+            });
+            res.error(function(err) {
+                console.log(err);
+            })
+
+            $uibModalInstance.close(vm.formData.model);
+        }
+
+        function cancel() {
+            vm.formData.options.resetModel()
+            $uibModalInstance.dismiss('cancel');
+        };
+    });
+
+    // Office Modal controllers
+    app.controller('OfficeModalCtrl', function($scope, $uibModalInstance, formData, $http) {
+        var vm = this;
+        // function assignment
+        vm.ok = ok;
+        vm.cancel = cancel;
+
+        // variable assignment
+        vm.formData = formData;
+        vm.originalFields = angular.copy(vm.formData.fields);
+
+        // function definition
+        function ok() {
+            vm.formData.model.userid = formData.userid;
+
+            // Send to server
+            var res = $http.post('/offices/', vm.formData.model);
+            res.success(function(data) {
+                $scope.users = data;
+                vm.formData.model = {};
+            });
+            res.error(function(err) {
+                console.log(err);
+            })
+
+            $uibModalInstance.close(vm.formData.model);
+        }
+
+        function cancel() {
+            vm.formData.options.resetModel()
+            $uibModalInstance.dismiss('cancel');
+        };
+    });
+
+    // Family Modal controllers
+    app.controller('FamilyModalCtrl', function($scope, $uibModalInstance, formData, $http) {
+        var vm = this;
+        // function assignment
+        vm.ok = ok;
+        vm.cancel = cancel;
+
+        // variable assignment
+        vm.formData = formData;
+        vm.originalFields = angular.copy(vm.formData.fields);
+
+        // function definition
+        function ok() {
+            vm.formData.model.userid = formData.userid;
+
+            // Send to server
+            var res = $http.post('/families/', vm.formData.model);
+            res.success(function(data) {
+                $scope.users = data;
+                vm.formData.model = {};
             });
             res.error(function(err) {
                 console.log(err);

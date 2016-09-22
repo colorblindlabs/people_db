@@ -17,12 +17,10 @@ router.post('/', function(req, res, next) {
     var newUser = new Users({
         //need to add an email here 
         fullname: req.body.fullname,
-        personal: {
-            address: req.body.address,
-            city: req.body.city,
-            email: req.body.email,
-            phone: req.body.phone
-        }
+        address: req.body.address,
+        city: req.body.city,
+        email: req.body.email,
+        phone: req.body.phone
     });
 
     newUser.save(function(err, post) {
